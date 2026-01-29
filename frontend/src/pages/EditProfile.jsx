@@ -11,6 +11,7 @@ export default function EditProfile() {
   const navigate = useNavigate();
   const { fetchProfiles } = useAppContext();
   const [profile, setProfile] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     axios
@@ -26,6 +27,7 @@ export default function EditProfile() {
 
   const handleUpdate = async (data) => {
     try {
+      setLoading(true);
       const formData = new FormData();
       Object.keys(data).forEach((key) => {
         if (data[key]) formData.append(key, data[key]);
@@ -37,6 +39,8 @@ export default function EditProfile() {
       navigate("/profiles", { replace: true });
     } catch (error) {
       toast.error(error?.response?.data?.message || "Failed to update profile");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -51,6 +55,7 @@ export default function EditProfile() {
             initialData={profile}
             onSubmit={handleUpdate}
             submitText="Update"
+            loading={loading}
           />
         </div>
       </div>

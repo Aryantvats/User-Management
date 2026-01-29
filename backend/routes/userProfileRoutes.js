@@ -11,7 +11,7 @@ import {
   createProfilesBulk,
 } from "../controllers/userProfileController.js";
 import { protect } from "../middleware/authMiddleware.js";
-import { upload } from "../middleware/upload.js";
+import  upload  from "../middleware/multer.js";
 import { validate } from "../middleware/validate.js";
 import { userProfileSchema } from "../schema/userProfileSchema.js";
 

@@ -2,8 +2,6 @@ import StatusDropdown from "./StatusDropdown.jsx";
 import ActionMenu from "./ActionMenu.jsx";
 import { User } from "lucide-react";
 
-const IMAGE_BASE_URL = import.meta.env.VITE_IMAGE_URL;
-
 export default function UserRow({ user, index }) {
   return (
     <tr className="border-b hover:bg-gray-50">
@@ -27,7 +25,7 @@ export default function UserRow({ user, index }) {
       <td className="p-2">
         {user.profileImage ? (
           <img
-            src={`${IMAGE_BASE_URL}${user.profileImage}`}
+            src={user.profileImage}
             alt="profile"
             className="w-8 h-8 rounded-full object-cover"
           />

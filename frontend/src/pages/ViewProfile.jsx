@@ -4,8 +4,6 @@ import { User } from "lucide-react";
 import Header from "../components/layout/Header.jsx";
 import { useAppContext } from "../context/AppContext.jsx";
 
-const IMAGE_BASE_URL = import.meta.env.VITE_IMAGE_URL;
-
 export default function ViewProfile() {
   const { id } = useParams();
   const { selectedProfile, fetchProfileById } = useAppContext();
@@ -36,7 +34,7 @@ export default function ViewProfile() {
           <div className="bg-gradient-to-r from-red-600 to-red-700 p-4 sm:p-6 flex flex-col sm:flex-row items-center gap-4 sm:gap-6 text-center sm:text-left">
             {p.profileImage ? (
               <img
-                src={`${IMAGE_BASE_URL}${p.profileImage}`}
+                src={p.profileImage}
                 className="w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover border-4 border-white"
               />
             ) : (

@@ -1,7 +1,5 @@
 import { useState, useEffect } from "react";
-import { User } from "lucide-react";
-
-const IMAGE_BASE_URL = import.meta.env.VITE_IMAGE_URL;
+import { User, Loader2 } from "lucide-react";
 
 export default function ProfileForm({
   initialData = {},
@@ -46,7 +44,7 @@ export default function ProfileForm({
       <div className="flex justify-center mb-6">
         {initialData?.profileImage && !formData.profileImage?.name ? (
           <img
-            src={`${IMAGE_BASE_URL}${initialData.profileImage}`}
+            src={initialData.profileImage}
             alt="Profile"
             className="w-20 h-20 rounded-full object-cover border-2 border-gray-200"
           />
@@ -178,8 +176,9 @@ export default function ProfileForm({
       <button
         type="submit"
         disabled={loading}
-        className="w-full mt-6 bg-red-700 text-white py-2 rounded text-sm font-medium hover:bg-red-800"
+        className="w-full mt-6 bg-red-700 text-white py-2 rounded text-sm font-medium hover:bg-red-800 flex items-center justify-center gap-2 disabled:opacity-70"
       >
+        {loading && <Loader2 className="animate-spin" size={18} />}
         {submitText}
       </button>
     </form>
