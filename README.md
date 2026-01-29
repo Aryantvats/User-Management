@@ -202,13 +202,4 @@ npm run dev
 
 **Aryan Tyagi**
 
----
 
-If you want, I can now:
-
-* remove sensitive keys safely
-* prepare **submission checklist**
-* write **interview explanation**
-* optimize for **deployment (Vercel + MongoDB)**
-
-Just tell me 👍
