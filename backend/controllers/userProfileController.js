@@ -7,7 +7,7 @@ export const createProfile = async (req, res) => {
     const profile = await UserProfile.create({
       ...req.body,
       createdBy: req.user._id,
-      profileImage: req.file?.path || null,
+      profileImage: req.file?.path ? `/${req.file.path.replace(/\\/g, "/")}` : null,
     });
 
     res.status(201).json({
@@ -55,8 +55,7 @@ export const getProfiles = async (req, res) => {
 export const getProfileById = async (req, res) => {
   try {
     const profile = await UserProfile.findOne({
-      _id: req.params.id,
-      createdBy: req.user._id,
+      _id: req.params.id
     });
 
     if (!profile) {
@@ -84,11 +83,11 @@ export const updateProfile = async (req, res) => {
     const data = { ...req.body };
 
     if (req.file) {
-      data.profileImage = req.file.path;
+      data.profileImage = `/${req.file.path.replace(/\\/g, "/")}`;
     }
 
     const profile = await UserProfile.findOneAndUpdate(
-      { _id: req.params.id, createdBy: req.user._id },
+      { _id: req.params.id},
       data,
       { new: true, runValidators: true }
     );
@@ -116,8 +115,7 @@ export const updateProfile = async (req, res) => {
 export const deleteProfile = async (req, res) => {
   try {
     const profile = await UserProfile.findOneAndDelete({
-      _id: req.params.id,
-      createdBy: req.user._id,
+      _id: req.params.id
     });
 
     if (!profile) {
@@ -145,7 +143,6 @@ export const searchProfiles = async (req, res) => {
     const q = req.query.q || "";
 
     const profiles = await UserProfile.find({
-      createdBy: req.user._id,
       $or: [
         { firstName: { $regex: q, $options: "i" } },
         { lastName: { $regex: q, $options: "i" } },
@@ -168,9 +165,7 @@ export const searchProfiles = async (req, res) => {
 
 export const exportProfilesToCSV = async (req, res) => {
   try {
-    const profiles = await UserProfile.find({
-      createdBy: req.user._id,
-    }).lean();
+    const profiles = await UserProfile.find().lean();
 
     const fields = [
       "firstName",
@@ -189,6 +184,61 @@ export const exportProfilesToCSV = async (req, res) => {
     res.setHeader("Content-Type", "text/csv");
     res.setHeader("Content-Disposition", "attachment; filename=user_profiles.csv");
     res.send(csv);
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+export const updateStatus = async (req, res) => {
+  const { status } = req.body;
+
+  if (!status) {
+    return res.status(400).json({
+      success: false,
+      message: "Status is required",
+    });
+  }
+
+  const profile = await UserProfile.findByIdAndUpdate(
+    req.params.id,
+    { status },
+    { new: true }
+  );
+
+  res.status(200).json({
+    success: true,
+    data: profile,
+  });
+};
+
+
+//backend only
+
+export const createProfilesBulk = async (req, res) => {
+  try {
+    if (!Array.isArray(req.body) || req.body.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid data",
+      });
+    }
+
+    const profilesData = req.body.map((item) => ({
+      ...item,
+      createdBy: req.user._id,
+      profileImage: null,
+    }));
+
+    const profiles = await UserProfile.insertMany(profilesData);
+
+    res.status(201).json({
+      success: true,
+      count: profiles.length,
+      data: profiles,
+    });
   } catch (error) {
     res.status(500).json({
       success: false,
